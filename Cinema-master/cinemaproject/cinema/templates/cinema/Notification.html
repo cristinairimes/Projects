@@ -1,0 +1,67 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <title>Notificări</title>
+    <script src="{% static 'cinema/scripts.js' %}"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="{% static 'cinema/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+
+<body>
+    <div class="header">
+        <h1><a href="index" style="color: inherit; text-decoration: none;">{{settings.site_name}}</a></h1>
+        {% if user.is_authenticated %}
+            <span id = "hello"> Bine ai venit, {{request.user}}! <a href="logout" style="color: #ff0000; text-decoration: none;"> (logout)</a></span>
+        {% else %}
+        {% endif %}
+         
+        {% if has_notif == True %}
+            <a href="notifications" style = "color:#ff0000" ><i class="fa fa-bell"></i></a>
+        {% else %}
+            <a href="notifications" style = "color:#ffffff" ><i class="fa fa-bell"></i></a>
+        {% endif %}
+    </div>
+
+    <div class="content">
+        <div class="navbar">
+            <ul>
+                <li><a href="index">Acasă <i class="fa fa-home"></i></a></li>
+                <li><a href="schedule">Program <i class="fa fa-calendar"></i></a></li>
+                <li><a href="profile">Profil <i class="fa fa-address-book"></i> </a></li>
+                <li><a href="contact">Contact <i class="fa fa-phone"></i></a></li>
+                {% for group_for in request.user.groups.all %}
+                    {% if group_for.name == 'employee' or group_for.name == 'admin'%}
+                        <li><a href="employee" style = "color: #3333cc">Angajat </a></li>
+                    {% endif %}
+
+                    {% if group_for.name == 'admin' %}
+                        <li><a href="admin" style = "color: #cc0000">Admin </a></li>
+                    {% endif %}
+
+                {% endfor %}
+                
+            </ul>
+        </div>
+
+
+    <div align = "center" style = "">
+        {% for notification in my_notifications %}
+            <p style = "font-weight:bold">{{notification.sent_date}}, {{notification.time}}</p>
+            <div align = "center" style = "border:solid; width:50%; background-color:#c5e8ce">
+                <p style = "font-size:25px; font-family:'Times New Roman'">{{notification.text}}</p>
+                <button style = "border-radius: 10px; background-color: #0EAF92; color: #000000; font-size: 15px" type="button"><a style = "text-decoration: none; color:#000000" href = "delete/notification/{{notification.id}}">sterge</a></button>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+
+  
+
+
+</body>
+
+</html>

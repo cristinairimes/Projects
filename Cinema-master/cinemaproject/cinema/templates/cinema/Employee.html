@@ -1,0 +1,102 @@
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <title>Angajat</title>
+    <link rel="stylesheet" href="{% static 'cinema/style.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+</head>
+
+
+<body>
+    <div class="header">
+        <h1><a href="index" style="color: inherit; text-decoration: none;">{{settings.site_name}}</a></h1>
+        {% if user.is_authenticated %}
+            <span id = "hello"> Bine ai venit, {{request.user}}! <a href="logout" style="color: #ff0000; text-decoration: none;"> (logout)</a></span>
+        {% else %}
+        {% endif %}
+         
+        {% if has_notif == True %}
+            <a href="notifications" style = "color:#ff0000" ><i class="fa fa-bell"></i></a>
+        {% else %}
+            <a href="notifications" style = "color:#ffffff" ><i class="fa fa-bell"></i></a>
+        {% endif %}
+    </div>
+
+    <div class="content">
+        <div class="navbar">
+            <ul>
+                <li><a href="index">Acasă <i class="fa fa-home"></i></a></li>
+                <li><a href="schedule">Program <i class="fa fa-calendar"></i></a></li>
+                <li><a href="profile">Profil <i class="fa fa-address-book"></i> </a></li>
+                <li><a href="contact">Contact <i class="fa fa-phone"></i></a></li>
+                {% for group_for in request.user.groups.all %}
+                {% if group_for.name == 'employee' or group_for.name == 'admin' %}
+                    <li><a class = "active"  href="employee" style = "color: #3333cc">Angajat </a></li>
+                {% endif %}
+    
+                {% if group_for.name == 'admin' %}
+                    <li><a href="admin" style = "color: #cc0000">Admin </a></li>
+                {% endif %}
+
+            {% endfor %}
+
+            </ul>
+        </div>
+   </div>
+
+
+
+   <div>
+    <p align = "center" style = "font-size: 24"> Mesaje trimise de utilizatori </p>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Utilizator</th>
+            <th scope="col">Mesaj</th>
+            <th scope="col">Data</th>
+          </tr>
+        </thead>
+
+        <tbody>
+            {% for message in messages_list %}
+                {% if message.response == "none" %}
+                    <td>{{message.sender}}</td>
+                    <td>{{message.text}}</td>
+                    <td>{{message.send_date}}</td>
+                    <td>
+                        <form method="POST" action="">
+                            {%csrf_token%}
+                            <textarea style = "font-size: 15" rows = "2" name="response" class="form-control mb-30" placeholder="Raspunsul dumneavoastra"></textarea>
+                            <input hidden type = "text" value = {{message.id}} name = "aux_field">
+                            <input type="submit" name="submit" value ="Raspunde">
+                        </form> </td>
+                    </tr>
+                {% else %}
+                {% endif %}
+               
+             {% endfor %}
+        </tbody>
+    </table>
+
+    </div> 
+
+    <div align = "center">
+        <table >
+            <tr >
+                <th >  
+                    <button style = "border-radius: 10px; background-color: #0EAF92; color: #000000; font-size: 22px" type="button"><a style = "color: #000000; text-decoration: none" href = "create-movie">Adaugă film</a></button>
+                <th> 
+                    <button style = "margin-left: 50; border-radius: 10px; background-color: #0EAF92; color: #000000; font-size: 22px"  type="button"><a style = "color: #000000; text-decoration: none" href = "create-show">Adaugă show</a></button>
+                </th>
+            </tr>
+        </table>
+    </div>    
+
+</body>
+
+</html>
